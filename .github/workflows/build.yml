@@ -22,7 +22,7 @@ jobs:
    runs-on: [self-hosted]
    steps:
      - name: Pull image from docker hub
-       run: docker pull ${{ vars.DOCKER_USER }}/nodejs-app:latest
+       run: docker pull ${{ vars.DOCKER_USER }}/node_comic_app:latest
      - name: Delete old container
        run: docker rm -f node_comic_app_container
      - name: Run docker container
