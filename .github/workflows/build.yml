@@ -12,19 +12,19 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
       - name: Login to docker hub
-        run: docker login -u ${{ var.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u ${{ vars.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build docker image
-        run: docker build -t ${{ var.DOCKER_USER }}/node_comic_app .
+        run: docker build -t ${{ vars.DOCKER_USER }}/node_comic_app .
       - name: Publish image to docker hub
-        run: docker push ${{ secrets.DOCKER_USER }}/node_comic_app:latest
+        run: docker push ${{ vars.DOCKER_USER }}/node_comic_app:latest
   deploy:
    needs: build
    runs-on: [self-hosted]
    steps:
      - name: Pull image from docker hub
-       run: docker pull ${{ secrets.DOCKER_USER }}/nodejs-app:latest
+       run: docker pull ${{ vars.DOCKER_USER }}/nodejs-app:latest
      - name: Delete old container
        run: docker rm -f node_comic_app_container
      - name: Run docker container
-       run: docker run -d -p 5000:5000 --name node_comic_app_container ${{ secrets.DOCKER_USERNAME }}/node_comic_app
+       run: docker run -d -p 5000:5000 --name node_comic_app_container ${{ vars.DOCKER_USERNAME }}/node_comic_app
 
