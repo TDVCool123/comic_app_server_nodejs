@@ -1,4 +1,4 @@
-name: Build
+name: Build Comic App
 on:
   pull_request:
     branches: [ 'master' ]
@@ -9,10 +9,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - run: npm install
-      - run: npm install -g typescript
-      - run: tsc
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Login to docker hub
+        run: docker login -u ${{ var.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build docker image
+        run: docker build -t ${{ var.DOCKER_USER }}/node_comic_app .
+      - name: Publish image to docker hub
+        run: docker push ${{ secrets.DOCKER_USER }}/node_comic_app:latest
+  deploy:
+   needs: build
+   runs-on: [self-hosted]
+   steps:
+     - name: Pull image from docker hub
+       run: docker pull ${{ secrets.DOCKER_USER }}/nodejs-app:latest
+     - name: Delete old container
+       run: docker rm -f node_comic_app_container
+     - name: Run docker container
+       run: docker run -d -p 5000:5000 --name node_comic_app_container ${{ secrets.DOCKER_USERNAME }}/node_comic_app
+
