@@ -26,5 +26,5 @@ jobs:
      - name: Delete old container
        run: docker rm -f node_comic_app_container
      - name: Run docker container
-       run: docker run -d -p 5000:5000 --name node_comic_app_container ${{ vars.DOCKER_USERNAME }}/node_comic_app
+       run: docker run -d -p 5000:5000 --name node_comic_app_container ${{ vars.DOCKER_USER }}/node_comic_app
 
