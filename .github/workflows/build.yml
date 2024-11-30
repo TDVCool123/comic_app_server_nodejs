@@ -14,7 +14,7 @@ jobs:
           CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
         run: |
           echo "$CREDENTIAL_FILE_CONTENT" > credentials.json
-
+      
       - name: Move credentials to build context
         run: mv credentials.json ./credentials.json
         
