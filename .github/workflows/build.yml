@@ -44,4 +44,4 @@ jobs:
         run: docker rm -f node_comic_app_container || true
 
       - name: Run docker container
-        run: docker run -d -p 5000:5000 --name node_comic_app_container ${{ vars.DOCKER_USER }}/node_comic_app
+        run: docker run -d -p 3000:3000 --name node_comic_app_container ${{ vars.DOCKER_USER }}/node_comic_app
