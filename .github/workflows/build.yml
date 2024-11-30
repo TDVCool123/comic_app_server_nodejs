@@ -15,11 +15,11 @@ jobs:
         run: |
           echo "$CREDENTIAL_FILE_CONTENT" > credentials.json
       
-      - name: Checkout source
-        uses: actions/checkout@
-
       - name: Move credentials to build context
         run: mv credentials.json ./credentials.json
+
+      - name: Checkout source
+        uses: actions/checkout@4
       
       - name: Login to docker hub
         run: |
