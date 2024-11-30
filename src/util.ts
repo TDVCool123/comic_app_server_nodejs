@@ -160,6 +160,6 @@ function bodyToComicListNew(body: string): Comic[] {
     .filter((c: Comic | null): c is Comic => c !== null);
 }
 
-export const BASE_URL = 'https://manganato.com';
+export const BASE_URL = 'https://ww.mangakakalot.tv';
 
 export { isValidURL, log, escapeHTML, encode, decode, GET, bodyToComicList, bodyToComicListNew };
