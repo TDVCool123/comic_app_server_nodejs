@@ -14,6 +14,7 @@ jobs:
           CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
         run: |
           echo "$CREDENTIAL_FILE_CONTENT" > credentials.json
+          ls -la
 
       - name: Checkout source
         uses: actions/checkout@v4
