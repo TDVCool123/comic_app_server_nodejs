@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copiar dependencias
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 RUN npm install -g typescript
 
 # Copiar código fuente
