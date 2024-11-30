@@ -7,10 +7,10 @@ const express_1 = require("express");
 const category_controller_1 = require("./category.controller");
 const category_crawler_1 = require("./category.crawler");
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
-const serviceAccountKey_json_1 = __importDefault(require("../serviceAccountKey.json"));
+const credentials_json_1 = __importDefault(require("../credentials.json"));
 firebase_admin_1.default.initializeApp({
-    credential: firebase_admin_1.default.credential.cert(serviceAccountKey_json_1.default),
-    databaseURL: "https://doanlthtvdk.firebaseio.com"
+    credential: firebase_admin_1.default.credential.cert(credentials_json_1.default),
+    databaseURL: "https://comicdb-220e5-default-rtdb.firebaseio.com"
 });
 const crawler = new category_crawler_1.Crawler();
 const controller = new category_controller_1.Controller(crawler);
