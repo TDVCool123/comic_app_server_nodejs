@@ -19,7 +19,7 @@ jobs:
         run: mv credentials.json ./credentials.json
 
       - name: Checkout source
-        uses: actions/checkout@4
+        uses: actions/checkout@v4
       
       - name: Login to docker hub
         run: |
