@@ -9,15 +9,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout source
+        uses: actions/checkout@v4
+      
       - name: Create credentials file
         env:
           CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
         run: |
           echo "$CREDENTIAL_FILE_CONTENT" > credentials.json
           ls -la
-
-      - name: Checkout source
-        uses: actions/checkout@v4
 
       - name: List files in build context
         run: ls -la  
