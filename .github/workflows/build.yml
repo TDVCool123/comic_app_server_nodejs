@@ -19,6 +19,7 @@ jobs:
         run: |
           echo "$CREDENTIAL_FILE_CONTENT" > credentials.json
           ls -la
+          cat credentials.json
 
       - name: List files in build context
         run: ls -la  
