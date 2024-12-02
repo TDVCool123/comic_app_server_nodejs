@@ -8,13 +8,13 @@ export class Crawler {
     const body = await GET(link);
     const $ = cheerio.load(body);
 
-    const content_left = $('div.container-main-left');
-    const panel_story_info = content_left.find('div.panel-story-info');
-    const story_info_left = panel_story_info.find('div.story-info-left');
-    const story_info_right = panel_story_info.find('div.story-info-right');
+    const content_left = $('div.leftCol');
+    const panel_story_info = content_left.find('div.manga-info-top');
+    const manga_info_pic = panel_story_info.find('div.manga-info-pic');
+    const manga_info_text = panel_story_info.find('div.manga-info-text');
 
-    const thumbnail = story_info_left.find('img').attr('src');
-    const title = story_info_right.find('h1').first().text().trim();
+    const thumbnail = manga_info_pic.find('img').attr('src');
+    const title = manga_info_text.find('h1').first().text().trim();
 
     let authors: {
       readonly name: string;
@@ -29,12 +29,12 @@ export class Crawler {
     let status: string | null = null;
     let alternative: string | null = null;
 
-    story_info_right.find('table.variations-tableInfo > tbody > tr').toArray().forEach((tr: CheerioElement) => {
+    manga_info_text.find('table.variations-tableInfo > tbody > tr').toArray().forEach((tr: CheerioElement) => {
       const $tr = $(tr);
       const table_value = $tr.find('td.table-value');
 
       switch ($tr.find('td.table-label').text()) {
-        case 'Alternative :':
+        case 'story-alternative :':
           alternative = table_value.find('h2').text();
           break;
         case 'Author(s) :':
@@ -63,7 +63,7 @@ export class Crawler {
     let last_updated: string | null = null;
     let view: string | null = null;
 
-    story_info_right.find('div.story-info-right-extent > p').toArray().forEach((p: CheerioElement) => {
+    manga_info_text.find('div.story-info-right-extent > p').toArray().forEach((p: CheerioElement) => {
       const $p = $(p);
       const stre_value = $p.find('span.stre-value');
 
