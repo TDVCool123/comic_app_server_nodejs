@@ -1,72 +1,72 @@
 import cheerio from 'cheerio';
 import { ChapterDetail } from "./chapter_detail.interface";
-import { GET } from "../util";
+import { GET,log } from "../util";
 
 export class Crawler {
   async chapterDetailNew(chapter_link: string): Promise<ChapterDetail> {
     const body = await GET(chapter_link);
     const $ = cheerio.load(body);
 
-    const body_site = $('div.body-site');
-    const container_chapter_reader = body_site.find('div.container-chapter-reader');
+    const body_site = $('body.trang-doc');
+    
+    // Extraer cómic y enlace desde el breadcrumb
+    const breadcrumb = body_site.find('div.breadcrumb.breadcrumbs.bred_doc > div.rdfa-breadcrumb > div > p');
+    const comicAnchor = breadcrumb.find('span[itemtype="http://data-vocabulary.org/Breadcrumb"]').eq(1); // Segundo enlace contiene el cómic
+    const comic_name = $(comicAnchor).find('a > span[itemprop="title"]').text().trim();
+    const comic_link = $(comicAnchor).find('a').attr('href');
+    
+    // Obtener el contenedor de capítulos
+    const optionWrap = body_site.find('div.option_wrap').first();
 
-    const images = container_chapter_reader.find('img').toArray().map(e => e.attribs.src);
+    // Extraer capítulos
+    const chapters = optionWrap.find('select#c_chapter > option').toArray().map(option => {
+      const $option = $(option);
+      return {
+        chapter_name: $option.text().trim(),
+        chapter_link: $option.attr('value')
+      };
+    });
+
+
+    // Extraer enlaces de navegación
+    let prev_chapter_link: string = 'lol';
+    let next_chapter_link: string = 'lo';
+
+    optionWrap.find('div.btn-navigation-chap > a').toArray().map((a) => {
+      const $a = $(a);
+      const label = $a.text().replace(/\s+/g, ' ').trim();
+      //log(label)
+      if (label.startsWith('PREV CHAPTER')){
+        prev_chapter_link = $a.attr('href').trim();
+        //log(prev_chapter_link)
+      } else if (label.startsWith('NEXT CHAPTER')){
+        next_chapter_link = $a.attr('href').trim();
+        //log(next_chapter_link)
+      }
+    });
+    
+
+    // Extraer el nombre del comic y del capítulo actual
+    const comic_chapter_name = optionWrap.find('h1.current-chapter').text();
+
+    //const comic_name= comic_chapter_name.replace(': Chapter 17', '').trim();
+    const chapter_name= comic_chapter_name.replace('Contender: ', '').trim();
+
+    // Extraer imágenes
+    const imageContainer = body_site.find('div.vung-doc');
+    const images = imageContainer.find('img.img-loading').toArray().map(img => $(img).attr('data-src'));
+
+
 
     return {
       chapter_link,
-      chapter_name: "",
-      chapters: [],
-      comic_link: "",
-      comic_name: "",
-      images,
-      next_chapter_link: "",
-      prev_chapter_link: ""
-    };
-  }
-
-  async chapterDetail(link: string): Promise<ChapterDetail> {
-    const body = await GET(link);
-    const $ = cheerio.load(body);
-    const content_left = $('div.content_left');
-
-    const images = content_left.find('div.list_img > img')
-      .toArray()
-      .map(img => $(img).attr('src'));
-
-    const chapters = content_left.find('div.next_prev_chapter > div.next_prev > select#list_chapters1 > option')
-      .toArray()
-      .map(option => {
-        const $option = $(option);
-        return {
-          chapter_name: $option.text(),
-          chapter_link: $option.attr('value'),
-        };
-      });
-    const currentIndex = chapters.findIndex(chapter => chapter.chapter_link === link);
-    const prev_chapter_link = (() => {
-      const prev = chapters[currentIndex + 1];
-      return prev ? prev.chapter_link : undefined;
-    })();
-    const next_chapter_link = (() => {
-      const next = chapters[currentIndex - 1];
-      return next ? next.chapter_link : undefined;
-    })();
-
-    const chapter_name = $('section#breadcrumb_custom li:last-child').text().trim();
-
-    const chapterNameA = $($('section#breadcrumb_custom li').toArray()[2]).find('a');
-    const comic_name = chapterNameA.attr('title').trim();
-    const comic_link = chapterNameA.attr('href');
-
-    return {
-      images,
-      prev_chapter_link,
-      next_chapter_link,
-      chapters,
-      chapter_link: link,
       chapter_name,
-      comic_name,
+      chapters,
       comic_link,
+      comic_name,
+      images,
+      next_chapter_link,
+      prev_chapter_link
     };
   }
 }

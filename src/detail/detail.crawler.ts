@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import { ComicDetail } from "./comic_detail.interface";
-import { GET } from "../util";
+import { GET, log } from "../util";
 
 export class Crawler {
 
@@ -10,11 +10,13 @@ export class Crawler {
 
     const content_left = $('div.leftCol');
     const panel_story_info = content_left.find('div.manga-info-top');
-    const manga_info_pic = panel_story_info.find('div.manga-info-pic');
-    const manga_info_text = panel_story_info.find('div.manga-info-text');
+    const manga_info_pic = panel_story_info.find('div.asd-info-pic');
+    const manga_info_text = panel_story_info.find('ul.manga-info-text');
 
     const thumbnail = manga_info_pic.find('img').attr('src');
-    const title = manga_info_text.find('h1').first().text().trim();
+    log(thumbnail)
+    const title = manga_info_text.children('li').first().find('h1').text().trim();
+    log(title)
 
     let authors: {
       readonly name: string;
@@ -28,70 +30,60 @@ export class Crawler {
 
     let status: string | null = null;
     let alternative: string | null = null;
-
-    manga_info_text.find('table.variations-tableInfo > tbody > tr').toArray().forEach((tr: CheerioElement) => {
-      const $tr = $(tr);
-      const table_value = $tr.find('td.table-value');
-
-      switch ($tr.find('td.table-label').text()) {
-        case 'story-alternative :':
-          alternative = table_value.find('h2').text();
-          break;
-        case 'Author(s) :':
-          authors = table_value.find('a').toArray().map((a: CheerioElement) => {
-            const $a = $(a);
-            return {
-              name: $a.text(),
-              link: $a.attr('href'),
-            };
-          });
-          break;
-        case 'Status :':
-          status = table_value.text();
-          break;
-        case 'Genres :':
-          categories = table_value.find('a').toArray().map((a: CheerioElement) => {
-            const $a = $(a);
-            return {
-              name: $a.text(),
-              link: $a.attr('href'),
-            };
-          });
-      }
-    });
-
     let last_updated: string | null = null;
     let view: string | null = null;
 
-    manga_info_text.find('div.story-info-right-extent > p').toArray().forEach((p: CheerioElement) => {
-      const $p = $(p);
-      const stre_value = $p.find('span.stre-value');
+    manga_info_text.find('li').each((_, li) => {
+      const $li = $(li);
+      const label = $li.text().trim();
 
-      switch ($p.find('span.stre-label').text()) {
-        case 'Updated :':
-          last_updated = stre_value.text();
-          break;
-        case 'View :':
-          view = stre_value.text();
-          break;
+      if (label.startsWith('Author(s) :')) {
+          authors = $li.find('a').toArray().map((a) => ({
+              name: $(a).text().trim(),
+              link: $(a).attr('href')!,
+          }));
+      } else if (label.startsWith('Status :')) {
+          status = $li.text().replace('Status :', '').trim();
+      }else if (label.startsWith('View :')) {
+        view = $li.text().replace('View :', '').trim();
+      }else if (label.startsWith('Last updated :')) {
+        last_updated = $li.text().replace('Last updated :', '').trim();
+      }else if (label.startsWith('Genres :')) {
+          categories = $li.find('a').toArray().map((a) => ({
+              name: $(a).text().trim(),
+              link: $(a).attr('href')!,
+          }));
+      } else if ($li.find('h2.story-alternative').length) {
+          alternative = $li.find('h2.story-alternative').text().trim();
       }
     });
 
-    const panel_story_info_description = panel_story_info.find('div.panel-story-info-description').text();
-    const shortened_content = panel_story_info_description.substring(panel_story_info_description.indexOf(":") + 2);
 
-    const chapters = content_left.find('div.panel-story-chapter-list > ul.row-content-chapter > li')
+
+    const shortened_content =content_left.find('div#noidungm').text().trim()/*.replace()*/;
+    log(shortened_content)
+
+    //const  = panel_story_info_description.substring(panel_story_info_description.indexOf(":") + 2);
+
+    const chapters = $('div#chapter > div.manga-info-chapter > div.chapter-list > div.row')
       .toArray()
-      .map((li: CheerioElement) => {
-        const $li = $(li);
-        const a = $li.find('a');
+      .map((div) => {
+        const $div = $(div);
+        const chapter_title = $div.find('span > a').text().trim();
+        const chapter_link = $div.find('span > a').attr('href') ?? null;
+        const chapter_view = $div.find('span:nth-child(2)').text().trim();
+        const chapter_time = $div.find('span:nth-child(3)').text().trim();
+
         return {
-          chapter_name: a.text().trim(),
-          chapter_link: a.attr('href'),
-          view: $li.find('span.chapter-view').text().trim(),
-          time: $li.find('span.chapter-time').text().trim(),
+          chapter_name: chapter_title,
+          chapter_link: chapter_link,
+          view: chapter_view,
+          time: chapter_time,
         };
-      });
+    });
+
+    console.log(chapters);
+
 
     return {
       authors: authors ?? [],
