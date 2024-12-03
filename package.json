@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./dist/comic_app_server_nodejs/src/bin/www",
+    "start": "node ./dist/bin/www",
     "dev:ts": "tsc && npm start",
     "lint": "tslint --project tsconfig.json"
   },
