@@ -10,10 +10,10 @@ export class Crawler {
 
     const content_left = $('div.leftCol');
     const panel_story_info = content_left.find('div.manga-info-top');
-    const manga_info_pic = panel_story_info.find('div.asd-info-pic');
+    const manga_info_pic = panel_story_info.find('div.manga-info-pic');
     const manga_info_text = panel_story_info.find('ul.manga-info-text');
 
-    const thumbnail = manga_info_pic.find('img').attr('src');
+    const thumbnail = BASE_URL+manga_info_pic.find('img').attr('src');
     log(thumbnail)
     const title = manga_info_text.children('li').first().find('h1').text().trim();
     log(title)
