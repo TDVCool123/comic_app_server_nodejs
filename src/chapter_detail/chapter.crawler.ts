@@ -23,7 +23,7 @@ export class Crawler {
       const $option = $(option);
       return {
         chapter_name: $option.text().trim(),
-        chapter_link: $option.attr('value')
+        chapter_link: BASE_URL+"/chapter/manga-oj991744/"+$option.attr('value')
       };
     });
 
