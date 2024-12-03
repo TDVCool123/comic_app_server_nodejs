@@ -7,8 +7,8 @@ import { log, isValidURL } from "../util";
 export class Controller {
   getCategoryDetail: RequestHandler = async (req, res) => {
     try {
-      const { link } = req.query;
-      log({ link });
+      const { link, type = 'latest', category = 'All', state = 'all', page = '1' } = req.query;
+    log({ link });
 
       // check link is valid?
       if (!link) {
@@ -28,8 +28,11 @@ export class Controller {
           } as Error);
       }
 
-      const page = parseInt(req.query.page) || 1;
-      const comics = await Crawler.getComics(link, page);
+       // Build the updated URL if parameters are provided
+    const categoryLink = `${link}/?type=${type}&category=${category}&state=${state}&page=${page}`;
+    log({ categoryLink });
+
+    const comics = await Crawler.getComics(categoryLink, parseInt(page));
       res.status(200).json(comics);
     } catch (e) {
       log(e);

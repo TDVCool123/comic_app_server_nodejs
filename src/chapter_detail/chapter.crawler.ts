@@ -13,19 +13,13 @@ export class Crawler {
     const breadcrumb = body_site.find('div.breadcrumb.breadcrumbs.bred_doc > div.rdfa-breadcrumb > div > p');
     const comicAnchor = breadcrumb.find('span[itemtype="http://data-vocabulary.org/Breadcrumb"]').eq(1); // Segundo enlace contiene el cómic
     const comic_name = $(comicAnchor).find('a > span[itemprop="title"]').text().trim();
-    const comic_link = BASE_URL+$(comicAnchor).find('a').attr('href');
+    const comic_extract = $(comicAnchor).find('a').attr('href');
+    const comic_link = BASE_URL+comic_extract;
     
     // Obtener el contenedor de capítulos
     const optionWrap = body_site.find('div.option_wrap').first();
 
-    // Extraer capítulos
-    const chapters = optionWrap.find('select#c_chapter > option').toArray().map(option => {
-      const $option = $(option);
-      return {
-        chapter_name: $option.text().trim(),
-        chapter_link: BASE_URL+"/chapter/manga-oj991744/"+$option.attr('value')
-      };
-    });
+    
 
 
     // Extraer enlaces de navegación
@@ -51,6 +45,16 @@ export class Crawler {
 
     //const comic_name= comic_chapter_name.replace(': Chapter 17', '').trim();
     const chapter_name= comic_chapter_name.replace('Contender: ', '').trim();
+    const comic_id = comic_extract.replace(chapter_name,"").trim()
+
+    // Extraer capítulos
+    const chapters = optionWrap.find('select#c_chapter > option').toArray().map(option => {
+      const $option = $(option);
+      return {
+        chapter_name: $option.text().trim(),
+        chapter_link: BASE_URL+"/chapter/"+comic_id+"/"+$option.attr('value')
+      };
+    });
 
     // Extraer imágenes
     const imageContainer = body_site.find('div.vung-doc');
