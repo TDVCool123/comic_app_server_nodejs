@@ -3,7 +3,7 @@ import { Controller } from './category.controller';
 import { Crawler } from './category.crawler';
 
 import admin, { ServiceAccount } from "firebase-admin";
-import serviceAccount from "../credentials.json";
+import serviceAccount from "../../credentials.json";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as ServiceAccount),

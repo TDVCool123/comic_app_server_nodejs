@@ -11,8 +11,8 @@ RUN npm install -g typescript
 COPY . .
 
 # Copiar credentials.json a /app/src y /app/dist
-COPY /app/credentials.json /app/src/credentials.json
-COPY /app/credentials.json /app/dist/credentials.json
+COPY credentials.json /app/src/credentials.json
+COPY credentials.json /app/dist/credentials.json
 
 # Exponer el puerto de la aplicación
 EXPOSE 3000
