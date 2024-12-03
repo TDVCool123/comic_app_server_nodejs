@@ -15,7 +15,7 @@ class Crawler {
         const breadcrumb = body_site.find('div.breadcrumb.breadcrumbs.bred_doc > div.rdfa-breadcrumb > div > p');
         const comicAnchor = breadcrumb.find('span[itemtype="http://data-vocabulary.org/Breadcrumb"]').eq(1); // Segundo enlace contiene el cómic
         const comic_name = $(comicAnchor).find('a > span[itemprop="title"]').text().trim();
-        const comic_link = $(comicAnchor).find('a').attr('href');
+        const comic_link = util_1.BASE_URL + $(comicAnchor).find('a').attr('href');
         // Obtener el contenedor de capítulos
         const optionWrap = body_site.find('div.option_wrap').first();
         // Extraer capítulos
@@ -34,11 +34,11 @@ class Crawler {
             const label = $a.text().replace(/\s+/g, ' ').trim();
             //log(label)
             if (label.startsWith('PREV CHAPTER')) {
-                prev_chapter_link = $a.attr('href').trim();
+                prev_chapter_link = util_1.BASE_URL + $a.attr('href').trim();
                 //log(prev_chapter_link)
             }
             else if (label.startsWith('NEXT CHAPTER')) {
-                next_chapter_link = $a.attr('href').trim();
+                next_chapter_link = util_1.BASE_URL + $a.attr('href').trim();
                 //log(next_chapter_link)
             }
         });

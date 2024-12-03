@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import { ComicDetail } from "./comic_detail.interface";
-import { GET, log } from "../util";
+import { GET, log,BASE_URL } from "../util";
 
 export class Crawler {
 
@@ -40,7 +40,7 @@ export class Crawler {
       if (label.startsWith('Author(s) :')) {
           authors = $li.find('a').toArray().map((a) => ({
               name: $(a).text().trim(),
-              link: $(a).attr('href')!,
+              link: BASE_URL+$(a).attr('href')!,
           }));
       } else if (label.startsWith('Status :')) {
           status = $li.text().replace('Status :', '').trim();
@@ -51,7 +51,7 @@ export class Crawler {
       }else if (label.startsWith('Genres :')) {
           categories = $li.find('a').toArray().map((a) => ({
               name: $(a).text().trim(),
-              link: $(a).attr('href')!,
+              link: BASE_URL+$(a).attr('href')!,
           }));
       } else if ($li.find('h2.story-alternative').length) {
           alternative = $li.find('h2.story-alternative').text().trim();
@@ -70,7 +70,7 @@ export class Crawler {
       .map((div) => {
         const $div = $(div);
         const chapter_title = $div.find('span > a').text().trim();
-        const chapter_link = $div.find('span > a').attr('href') ?? null;
+        const chapter_link = BASE_URL+$div.find('span > a').attr('href');
         const chapter_view = $div.find('span:nth-child(2)').text().trim();
         const chapter_time = $div.find('span:nth-child(3)').text().trim();
 

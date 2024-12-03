@@ -30,7 +30,7 @@ class Crawler {
             if (label.startsWith('Author(s) :')) {
                 authors = $li.find('a').toArray().map((a) => ({
                     name: $(a).text().trim(),
-                    link: $(a).attr('href'),
+                    link: util_1.BASE_URL + $(a).attr('href'),
                 }));
             }
             else if (label.startsWith('Status :')) {
@@ -45,7 +45,7 @@ class Crawler {
             else if (label.startsWith('Genres :')) {
                 categories = $li.find('a').toArray().map((a) => ({
                     name: $(a).text().trim(),
-                    link: $(a).attr('href'),
+                    link: util_1.BASE_URL + $(a).attr('href'),
                 }));
             }
             else if ($li.find('h2.story-alternative').length) {
@@ -58,10 +58,9 @@ class Crawler {
         const chapters = $('div#chapter > div.manga-info-chapter > div.chapter-list > div.row')
             .toArray()
             .map((div) => {
-            var _a;
             const $div = $(div);
             const chapter_title = $div.find('span > a').text().trim();
-            const chapter_link = (_a = $div.find('span > a').attr('href')) !== null && _a !== void 0 ? _a : null;
+            const chapter_link = util_1.BASE_URL + $div.find('span > a').attr('href');
             const chapter_view = $div.find('span:nth-child(2)').text().trim();
             const chapter_time = $div.find('span:nth-child(3)').text().trim();
             return {
