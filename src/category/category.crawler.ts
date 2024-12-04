@@ -20,7 +20,7 @@ export class Crawler {
       const link = c.link;
       return {
         ...c,
-        thumbnail: images[link],
+        thumbnail: BASE_URL+images[link],
         description: descriptions[link]
       };
     });
