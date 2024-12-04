@@ -170,8 +170,24 @@ function bodyToComicListSearch(body: string): Comic[] {
       const $divComic: Cheerio = $(divComic);
 
       const $item_rigth = $divComic.find('div.story_item_right');
-      const chapter_link = $item_rigth.find("em > a").attr('href');
-      const chapter_name = $item_rigth.find("em > a").text();
+
+      // Seleccionar todos los capítulos (story_chapter)
+      const last_chapters = $item_rigth
+        .find("em.story_chapter > a")
+        .toArray()
+        .map((chapter: CheerioElement) => {
+          const $chapter = $(chapter);
+          const chapter_link = $chapter.attr('href');
+          const chapter_name = $chapter.text();
+          return chapter_link && chapter_name
+            ? {
+                chapter_name,
+                chapter_link: BASE_URL + chapter_link,
+                time: ' ', // Puedes agregar lógica para extraer el tiempo si está disponible.
+              }
+            : null;
+        })
+        .filter((chapter): chapter is { chapter_name: string; chapter_link: string; time: string } => chapter !== null);
 
       const thumbnail = $divComic.find('a > img').attr('src');
 
@@ -181,15 +197,7 @@ function bodyToComicListSearch(body: string): Comic[] {
 
       return link && thumbnail && title
         ? ({
-          last_chapters: chapter_link && chapter_name
-            ? [
-              {
-                chapter_name,
-                chapter_link: BASE_URL + chapter_link,
-                time: '',
-              },
-            ]
-            : [],
+          last_chapters,
           link: BASE_URL + link,
           thumbnail: BASE_URL + thumbnail,
           title,
