@@ -1,10 +1,10 @@
-import { GET, bodyToComicList } from "../util";
+import { GET, bodyToComicList, bodyToComicListNew } from "../util";
 import cheerio from 'cheerio';
 
 export class Crawler {
   static async getComics(categoryLink: string, page: number) {
     const body = await GET(categoryLink);
-    return bodyToComicList(body);
+    return bodyToComicListNew(body);
   }
 
   static async getPopularComics(categoryLink: string): Promise<PopularComic[]> {

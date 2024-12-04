@@ -11,7 +11,7 @@ class Controller {
                 res.status(200).json(categories);
             }
             catch (e) {
-                (0, util_1.log)(e);
+                util_1.log(e);
                 const error = {
                     message: 'Internal server error',
                     status_code: 500

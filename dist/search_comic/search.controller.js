@@ -8,7 +8,7 @@ class Controller {
         this.searchComic = async (req, res, _next) => {
             try {
                 const { query } = req.query;
-                (0, util_1.log)({ query });
+                util_1.log({ query });
                 // check query is valid?
                 if (query === undefined || query === null) {
                     return res
@@ -31,7 +31,7 @@ class Controller {
                 res.status(200).json(comics);
             }
             catch (e) {
-                (0, util_1.log)(e);
+                util_1.log(e);
                 res.status(500).json({
                     message: 'Internal server error',
                     status_code: 500

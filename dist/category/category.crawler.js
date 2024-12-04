@@ -11,9 +11,9 @@ const category_descriptions_1 = __importDefault(require("./category_descriptions
 class Crawler {
     constructor() { this.ref = firebase_admin_1.default.database().ref('comic_app'); }
     async allCategories() {
-        const body = await (0, util_1.GET)('https://ww2.mangafox.online/');
+        const body = await util_1.GET(util_1.BASE_URL + "/");
         const categories = this.getCategories(body);
-        const images = await this.fetchImagesIfNeeded(categories.map(c => c.link));
+        const images = await this.fetchImagesIfNeeded(categories.map(c => util_1.BASE_URL + c.link));
         return categories.map((c) => {
             const link = c.link;
             return {
@@ -25,7 +25,7 @@ class Crawler {
     }
     getCategories(body) {
         const $ = cheerio_1.default.load(body);
-        const categories = $('div.content_right > div.danhmuc > table > tbody > tr > td')
+        const categories = $('div.container > div.main-wrapper > div.middleCol > div.panel-category > table > tbody > tr> td')
             .toArray()
             .map(td => {
             const $td = $(td);
@@ -44,13 +44,13 @@ class Crawler {
             .then(snapshot => snapshot.val()));
         const [imagesNullable, lastFetch] = await Promise.all(promises);
         const images = Object.keys(imagesNullable !== null && imagesNullable !== void 0 ? imagesNullable : {})
-            .reduce((acc, k) => ({ ...acc, [(0, util_1.decode)(k)]: imagesNullable === null || imagesNullable === void 0 ? void 0 : imagesNullable[k] }), {});
-        (0, util_1.log)({ images, lastFetch });
+            .reduce((acc, k) => ({ ...acc, [util_1.decode(k)]: imagesNullable === null || imagesNullable === void 0 ? void 0 : imagesNullable[k] }), {});
+        util_1.log({ images, lastFetch });
         const haveNotImages = links.some(link => {
             const url = images[link];
-            return !url || !(0, util_1.isValidURL)(url);
+            return !url || !util_1.isValidURL(url);
         });
-        (0, util_1.log)({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
+        util_1.log({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
         if (haveNotImages || !lastFetch) {
             // first time or invalid data, need await
             return await this.getAndSaveImages(links);
@@ -60,7 +60,7 @@ class Crawler {
             // this is not the first time, not need await, data will be saved to firebase database for later
             // and current data is valid, just return
             // tslint:disable-next-line: no-floating-promises
-            this.getAndSaveImages(links).then(v => (0, util_1.log)({ v })).catch(e => (0, util_1.log)({ e }));
+            this.getAndSaveImages(links).then(v => util_1.log({ v })).catch(e => util_1.log({ e }));
             return images;
         }
         else {
@@ -73,9 +73,9 @@ class Crawler {
      * @param categoryLink category url
      */
     static async getFirstImage(categoryLink) {
-        const body = await (0, util_1.GET)(categoryLink);
-        const thumbnail = (0, util_1.bodyToComicList)(body)[0].thumbnail;
-        (0, util_1.log)(`[END  ] fetch ${thumbnail}`);
+        const body = await util_1.GET(categoryLink);
+        const thumbnail = util_1.bodyToComicListNew(body)[0].thumbnail;
+        util_1.log(`[END  ] fetch ${thumbnail}`);
         return { [categoryLink]: thumbnail };
     }
     /**
@@ -86,17 +86,17 @@ class Crawler {
         // get
         let images = {};
         for (const link of links) {
-            (0, util_1.log)(`[START] fetch ${link}`);
+            util_1.log(`[START] fetch ${link}`);
             const data = await Crawler.getFirstImage(link);
             images = { ...images, ...data };
         }
         // save
-        const encodedImages = Object.keys(images).reduce((acc, k) => ({ ...acc, [(0, util_1.encode)(k)]: images[k] }), {});
+        const encodedImages = Object.keys(images).reduce((acc, k) => ({ ...acc, [util_1.encode(k)]: images[k] }), {});
         await Promise.all([
             this.ref.child('images').set(encodedImages),
             this.ref.child('last_fetch').set(Date.now()),
         ]);
-        (0, util_1.log)('[DONE] fetch');
+        util_1.log('[DONE] fetch');
         return images;
     }
 }

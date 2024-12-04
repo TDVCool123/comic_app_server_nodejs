@@ -160,6 +160,46 @@ function bodyToComicListNew(body: string): Comic[] {
     .filter((c: Comic | null): c is Comic => c !== null);
 }
 
-export const BASE_URL = 'https://ww.mangakakalot.tv';
 
-export { isValidURL, log, escapeHTML, encode, decode, GET, bodyToComicList, bodyToComicListNew };
+function bodyToComicListSearch(body: string): Comic[] {
+  const $: CheerioStatic = cheerio.load(body);
+
+  return $('div.container > div.main-wrapper > div.leftCol > div.daily-update > div.panel_story_list > div.story_item')
+    .toArray()
+    .map((divComic: CheerioElement): Comic | null => {
+      const $divComic: Cheerio = $(divComic);
+
+      const $item_rigth = $divComic.find('div.story_item_right');
+      const chapter_link = $item_rigth.find("em > a").attr('href');
+      const chapter_name = $item_rigth.find("em > a").text();
+
+      const thumbnail = $divComic.find('a > img').attr('src');
+
+      const a = $divComic.find('h3 > a');
+      const link = a.attr('href');
+      const title = a.text();
+
+      return link && thumbnail && title
+        ? ({
+          last_chapters: chapter_link && chapter_name
+            ? [
+              {
+                chapter_name,
+                chapter_link: BASE_URL + chapter_link,
+                time: '',
+              },
+            ]
+            : [],
+          link: BASE_URL + link,
+          thumbnail: BASE_URL + thumbnail,
+          title,
+          view: $item_rigth.find('span:nth-child(3)').text(),
+        })
+        : null;
+    })
+    .filter((c: Comic | null): c is Comic => c !== null);
+}
+
+export const BASE_URL = 'https://ww8.mangakakalot.tv';
+
+export { isValidURL, log, escapeHTML, encode, decode, GET, bodyToComicList, bodyToComicListNew, bodyToComicListSearch};

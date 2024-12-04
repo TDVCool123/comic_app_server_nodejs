@@ -12,7 +12,7 @@ class Controller {
                 res.status(200).json(comics);
             }
             catch (e) {
-                (0, util_1.log)(e);
+                util_1.log(e);
                 const error = {
                     message: 'Internal server error',
                     status_code: 500
@@ -27,7 +27,7 @@ class Controller {
                 res.status(200).json(comics);
             }
             catch (e) {
-                (0, util_1.log)(e);
+                util_1.log(e);
                 const error = {
                     message: 'Internal server error',
                     status_code: 500
@@ -42,7 +42,7 @@ class Controller {
                 res.status(200).json(comics);
             }
             catch (e) {
-                (0, util_1.log)(e);
+                util_1.log(e);
                 const error = {
                     message: 'Internal server error',
                     status_code: 500,

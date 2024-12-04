@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import { Category } from "./category.interface";
-import { bodyToComicList, decode, encode, GET, isValidURL, log } from "../util";
+import { bodyToComicList, decode, encode, GET, isValidURL, log,BASE_URL, bodyToComicListNew } from "../util";
 import admin from "firebase-admin";
 import descriptions from './category_descriptions';
 
@@ -11,10 +11,10 @@ export class Crawler {
   constructor() { this.ref = admin.database().ref('comic_app'); }
 
   async allCategories(): Promise<Category[]> {
-    const body = await GET('https://ww2.mangafox.online/');
+    const body = await GET(BASE_URL+"/");
     const categories = this.getCategories(body);
 
-    const images = await this.fetchImagesIfNeeded(categories.map(c => c.link));
+    const images = await this.fetchImagesIfNeeded(categories.map(c => BASE_URL+c.link));
 
     return categories.map((c): Category => {
       const link = c.link;
@@ -28,7 +28,7 @@ export class Crawler {
 
   private getCategories(body: string) {
     const $ = cheerio.load(body);
-    const categories = $('div.content_right > div.danhmuc > table > tbody > tr > td')
+    const categories = $('div.container > div.main-wrapper > div.middleCol > div.panel-category > table > tbody > tr> td')
       .toArray()
       .map(td => {
         const $td = $(td);
@@ -84,7 +84,7 @@ export class Crawler {
    */
   private static async getFirstImage(categoryLink: string): Promise<{ [p: string]: string }> {
     const body = await GET(categoryLink);
-    const thumbnail = bodyToComicList(body)[0].thumbnail;
+    const thumbnail = bodyToComicListNew(body)[0].thumbnail;
     log(`[END  ] fetch ${thumbnail}`);
     return { [categoryLink]: thumbnail };
   }

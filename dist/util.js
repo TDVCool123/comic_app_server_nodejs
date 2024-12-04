@@ -3,12 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decode = exports.encode = exports.log = exports.BASE_URL = void 0;
-exports.isValidURL = isValidURL;
-exports.escapeHTML = escapeHTML;
-exports.GET = GET;
-exports.bodyToComicList = bodyToComicList;
-exports.bodyToComicListNew = bodyToComicListNew;
+exports.bodyToComicListSearch = exports.bodyToComicListNew = exports.bodyToComicList = exports.GET = exports.decode = exports.encode = exports.escapeHTML = exports.log = exports.isValidURL = exports.BASE_URL = void 0;
 const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 console.log(`NODEJS running: env = '${env}'`);
 if (env === 'development') {
@@ -17,7 +12,7 @@ if (env === 'development') {
 const debug_1 = __importDefault(require("debug"));
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
-const log = (0, debug_1.default)('comic-app-server:server');
+const log = debug_1.default('comic-app-server:server');
 exports.log = log;
 /**
  *
@@ -31,6 +26,7 @@ function isValidURL(str) {
         '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
     return pattern.test(str);
 }
+exports.isValidURL = isValidURL;
 function escapeHTML(s) {
     return s.replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
@@ -38,6 +34,7 @@ function escapeHTML(s) {
         .replace(/>/g, '&gt;')
         .replace(/\n/g, '');
 }
+exports.escapeHTML = escapeHTML;
 /**
  *
  */
@@ -72,6 +69,7 @@ function GET(url) {
         });
     });
 }
+exports.GET = GET;
 /**
  * Parse body to list of comics
  * @param body string
@@ -111,6 +109,7 @@ function bodyToComicList(body) {
         };
     });
 }
+exports.bodyToComicList = bodyToComicList;
 function bodyToComicListNew(body) {
     const $ = cheerio_1.default.load(body);
     return $('div.container > div.main-wrapper > div.leftCol.listCol > div.truyen-list > div.list-truyen-item-wrap')
@@ -144,5 +143,40 @@ function bodyToComicListNew(body) {
     })
         .filter((c) => c !== null);
 }
-exports.BASE_URL = 'https://ww.mangakakalot.tv';
+exports.bodyToComicListNew = bodyToComicListNew;
+function bodyToComicListSearch(body) {
+    const $ = cheerio_1.default.load(body);
+    return $('div.container > div.main-wrapper > div.leftCol > div.daily-update > div.panel_story_list > div.story_item')
+        .toArray()
+        .map((divComic) => {
+        const $divComic = $(divComic);
+        const $item_rigth = $divComic.find('div.story_item_right');
+        const chapter_link = $item_rigth.find("em > a").attr('href');
+        const chapter_name = $item_rigth.find("em > a").text();
+        const thumbnail = $divComic.find('a > img').attr('src');
+        const a = $divComic.find('h3 > a');
+        const link = a.attr('href');
+        const title = a.text();
+        return link && thumbnail && title
+            ? ({
+                last_chapters: chapter_link && chapter_name
+                    ? [
+                        {
+                            chapter_name,
+                            chapter_link: exports.BASE_URL + chapter_link,
+                            time: '',
+                        },
+                    ]
+                    : [],
+                link: exports.BASE_URL + link,
+                thumbnail: exports.BASE_URL + thumbnail,
+                title,
+                view: $item_rigth.find('span:nth-child(3)').text(),
+            })
+            : null;
+    })
+        .filter((c) => c !== null);
+}
+exports.bodyToComicListSearch = bodyToComicListSearch;
+exports.BASE_URL = 'https://ww8.mangakakalot.tv';
 //# sourceMappingURL=util.js.map

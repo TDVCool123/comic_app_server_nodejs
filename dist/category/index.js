@@ -14,7 +14,7 @@ firebase_admin_1.default.initializeApp({
 });
 const crawler = new category_crawler_1.Crawler();
 const controller = new category_controller_1.Controller(crawler);
-const router = (0, express_1.Router)();
+const router = express_1.Router();
 router.get('/', controller.getAllCategories);
 exports.default = router;
 //# sourceMappingURL=index.js.map

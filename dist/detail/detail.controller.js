@@ -8,7 +8,7 @@ class Controller {
         this.getComicDetail = async (req, res) => {
             try {
                 const { link } = req.query;
-                (0, util_1.log)({ link });
+                util_1.log({ link });
                 // check link is valid?
                 if (!link) {
                     return res
@@ -18,7 +18,7 @@ class Controller {
                         status_code: 542200
                     });
                 }
-                if (typeof link !== 'string' || !(0, util_1.isValidURL)(link)) {
+                if (typeof link !== 'string' || !util_1.isValidURL(link)) {
                     return res
                         .status(422)
                         .json({
@@ -30,7 +30,7 @@ class Controller {
                 res.status(200).json(comic);
             }
             catch (e) {
-                (0, util_1.log)(e);
+                util_1.log(e);
                 res.status(500)
                     .json({
                     message: 'Internal server error',

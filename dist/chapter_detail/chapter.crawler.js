@@ -8,7 +8,7 @@ const cheerio_1 = __importDefault(require("cheerio"));
 const util_1 = require("../util");
 class Crawler {
     async chapterDetailNew(chapter_link) {
-        const body = await (0, util_1.GET)(chapter_link);
+        const body = await util_1.GET(chapter_link);
         const $ = cheerio_1.default.load(body);
         const body_site = $('body.trang-doc');
         // Extraer cómic y enlace desde el breadcrumb
@@ -17,9 +17,9 @@ class Crawler {
         const comic_name = $(comicAnchor).find('a > span[itemprop="title"]').text().trim();
         const comic_extract = $(comicAnchor).find('a').attr('href');
         const comic_link = util_1.BASE_URL + comic_extract;
+        util_1.log(comic_extract);
         // Obtener el contenedor de capítulos
         const optionWrap = body_site.find('div.option_wrap').first();
-        (0, util_1.log)(optionWrap);
         // Extraer enlaces de navegación
         let prev_chapter_link = 'lol';
         let next_chapter_link = 'lo';
@@ -38,11 +38,12 @@ class Crawler {
         });
         // Extraer el nombre del comic y del capítulo actual
         const comic_chapter_name = optionWrap.find('div > h1.current-chapter').text();
-        (0, util_1.log)(comic_chapter_name);
+        //log(comic_chapter_name)
         //const comic_name= comic_chapter_name.replace(': Chapter 17', '').trim();
         const chapter_name = comic_chapter_name.replace('Contender: ', '').trim();
-        (0, util_1.log)(chapter_name);
+        //log(chapter_name)
         const id = comic_extract.replace("/manga/", "").trim();
+        util_1.log(id);
         // Extraer capítulos
         const chapters = optionWrap.find('select#c_chapter > option').toArray().map(option => {
             const $option = $(option);
