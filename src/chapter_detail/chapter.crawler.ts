@@ -48,7 +48,6 @@ export class Crawler {
     //const comic_name= comic_chapter_name.replace(': Chapter 17', '').trim();
     const chapter_name= comic_chapter_name.replace('Contender: ', '').trim();
     log(chapter_name)
-    const comic_id = comic_extract.replace(chapter_name,"").trim()
     const id = comic_extract.replace("/manga/","").trim()
 
     // Extraer capítulos
