@@ -194,14 +194,16 @@ function bodyToComicListSearch(body: string): Comic[] {
       const a = $divComic.find('h3 > a');
       const link = a.attr('href');
       const title = a.text();
+      const view = $item_rigth.find('span:contains("View")').text().replace('View : ', '').trim();
 
       return link && thumbnail && title
         ? ({
           last_chapters,
           link: BASE_URL + link,
-          thumbnail: BASE_URL + thumbnail,
+          thumbnail:  thumbnail,
           title,
-          view: $item_rigth.find('span:nth-child(3)').text(),
+          view
+,
         })
         : null;
     })

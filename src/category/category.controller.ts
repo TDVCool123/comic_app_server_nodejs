@@ -11,6 +11,7 @@ export class Controller {
   getAllCategories: RequestHandler = async (_req, res) => {
     try {
       const categories = await this.crawler.allCategories();
+      log(categories)
       res.status(200).json(categories);
     } catch (e) {
       log(e);
