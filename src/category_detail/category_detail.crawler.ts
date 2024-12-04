@@ -1,4 +1,4 @@
-import { GET, bodyToComicList, bodyToComicListNew } from "../util";
+import { GET, bodyToComicList, bodyToComicListNew,BASE_URL } from "../util";
 import cheerio from 'cheerio';
 
 export class Crawler {
@@ -8,7 +8,7 @@ export class Crawler {
   }
 
   static async getPopularComics(categoryLink: string): Promise<PopularComic[]> {
-    const body = await GET(categoryLink);
+    const body = await GET(BASE_URL+categoryLink);
     const $ = cheerio.load(body);
     return $('div.manga_slide_container > div.fit_thumbnail')
       .toArray()
