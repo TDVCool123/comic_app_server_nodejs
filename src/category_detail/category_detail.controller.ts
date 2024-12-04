@@ -7,7 +7,7 @@ import { log, isValidURL } from "../util";
 export class Controller {
   getCategoryDetail: RequestHandler = async (req, res) => {
     try {
-      const { link, type = 'latest', category = 'All', state = 'all', page = '1' } = req.query;
+      const { link, type = 'latest', category = 'All', state = 'all' } = req.query;
       link
     log({ link });
 
@@ -33,7 +33,7 @@ export class Controller {
     const categoryLink = `${link}/?type=${type}&category=${category}&state=${state}`;
     log({ categoryLink });
 
-    const comics = await Crawler.getComics(categoryLink, parseInt(page));
+    const comics = await Crawler.getComics(categoryLink, parseInt(req.query.page));
       res.status(200).json(comics);
     } catch (e) {
       log(e);
