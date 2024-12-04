@@ -41,7 +41,7 @@ export class Crawler {
     
 
     // Extraer el nombre del comic y del capítulo actual
-    const comic_chapter_name = optionWrap.find('h1.current-chapter').text();
+    const comic_chapter_name = optionWrap.find('div > h1.current-chapter').text();
 
     //const comic_name= comic_chapter_name.replace(': Chapter 17', '').trim();
     const chapter_name= comic_chapter_name.replace('Contender: ', '').trim();
