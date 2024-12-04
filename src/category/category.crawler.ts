@@ -34,7 +34,7 @@ export class Crawler {
       .map(td => {
         const $td = $(td);
         return {
-          link: $td.find('a').attr('href'),
+          link: BASE_URL+$td.find('a').attr('href'),
           name: $td.find('a').text().trim(),
         };
       });
