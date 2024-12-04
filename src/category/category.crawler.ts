@@ -28,8 +28,8 @@ export class Crawler {
 
   private getCategories(body: string) {
     const $ = cheerio.load(body);
-    const categories = $('div.container > div.main-wrapper > div.middleCol > div.panel-category > table > tbody > tr> td')
-      .slice(2)  // Comienza desde el tercer tr (índice 2)
+    const categories_row = $('div.container > div.main-wrapper > div.middleCol > div.panel-category > table > tbody > tr').slice(2)  // Comienza desde el tercer tr (índice 2)
+    const categories = categories_row.find('td')      
       .toArray()
       .map(td => {
         const $td = $(td);
