@@ -15,10 +15,10 @@ export class Crawler {
     const comic_name = $(comicAnchor).find('a > span[itemprop="title"]').text().trim();
     const comic_extract = $(comicAnchor).find('a').attr('href');
     const comic_link = BASE_URL+comic_extract;
+    log(comic_extract)
     
     // Obtener el contenedor de capítulos
     const optionWrap = body_site.find('div.option_wrap').first();
-    log(optionWrap)
 
     
 
@@ -43,13 +43,13 @@ export class Crawler {
 
     // Extraer el nombre del comic y del capítulo actual
     const comic_chapter_name = optionWrap.find('div > h1.current-chapter').text();
-    log(comic_chapter_name)
+    //log(comic_chapter_name)
 
     //const comic_name= comic_chapter_name.replace(': Chapter 17', '').trim();
     const chapter_name= comic_chapter_name.replace('Contender: ', '').trim();
-    log(chapter_name)
+    //log(chapter_name)
     const id = comic_extract.replace("/manga/","").trim()
-
+    log(id)
     // Extraer capítulos
     const chapters = optionWrap.find('select#c_chapter > option').toArray().map(option => {
       const $option = $(option);
