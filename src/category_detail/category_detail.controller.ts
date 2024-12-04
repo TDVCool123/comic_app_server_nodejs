@@ -8,6 +8,7 @@ export class Controller {
   getCategoryDetail: RequestHandler = async (req, res) => {
     try {
       const { link, type = 'latest', category = 'All', state = 'all', page = '1' } = req.query;
+      link
     log({ link });
 
       // check link is valid?
@@ -29,7 +30,7 @@ export class Controller {
       }
 
        // Build the updated URL if parameters are provided
-    const categoryLink = `${link}/?type=${type}&category=${category}&state=${state}&page=${page}`;
+    const categoryLink = `${link}/?type=${type}&category=${category}&state=${state}`;
     log({ categoryLink });
 
     const comics = await Crawler.getComics(categoryLink, parseInt(page));
