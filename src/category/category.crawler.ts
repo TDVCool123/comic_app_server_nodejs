@@ -17,10 +17,10 @@ export class Crawler {
     const images = await this.fetchImagesIfNeeded(categories.map(c => BASE_URL+c.link));
 
     return categories.map((c): Category => {
-      const link = c.link;
+      const link = BASE_URL+c.link;
       return {
         ...c,
-        thumbnail: BASE_URL+images[link],
+        thumbnail: images[link],
         description: descriptions[link]
       };
     });
