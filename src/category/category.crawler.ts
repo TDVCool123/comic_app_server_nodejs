@@ -38,7 +38,7 @@ export class Crawler {
           name: $td.find('a').text().trim(),
         };
       });
-    return categories.slice(0, categories.length - 1);
+    return categories.slice(0, categories.length - 0);
   }
 
   private async fetchImagesIfNeeded(links: string[]): Promise<{ [p: string]: string }> {
