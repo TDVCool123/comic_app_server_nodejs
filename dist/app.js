@@ -18,11 +18,11 @@ const chapter_detail_1 = __importDefault(require("./chapter_detail"));
 const search_comic_1 = __importDefault(require("./search_comic"));
 const category_1 = __importDefault(require("./category"));
 const category_detail_1 = __importDefault(require("./category_detail"));
-const app = express_1.default();
+const app = (0, express_1.default)();
 /**
  * Basic setup
  */
-app.use(morgan_1.default('dev'));
+app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -40,7 +40,7 @@ const routers = [
 ];
 routers.forEach(([p, r]) => {
     app.use(p, r);
-    util_1.log(`Use route ${p}`);
+    (0, util_1.log)(`Use route ${p}`);
 });
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -57,7 +57,7 @@ const errorHandler = (err, req, res, next) => {
         message: `An error occurred: '${err}'`,
         status_code: statusCode,
     };
-    util_1.log({ err });
+    (0, util_1.log)({ err });
     res.status(statusCode).json(error);
 };
 app.use(errorHandler);

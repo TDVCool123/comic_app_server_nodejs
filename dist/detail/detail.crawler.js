@@ -8,16 +8,16 @@ const cheerio_1 = __importDefault(require("cheerio"));
 const util_1 = require("../util");
 class Crawler {
     async comicDetailNew(link) {
-        const body = await util_1.GET(link);
+        const body = await (0, util_1.GET)(link);
         const $ = cheerio_1.default.load(body);
         const content_left = $('div.leftCol');
         const panel_story_info = content_left.find('div.manga-info-top');
-        const manga_info_pic = panel_story_info.find('div.asd-info-pic');
+        const manga_info_pic = panel_story_info.find('div.manga-info-pic');
         const manga_info_text = panel_story_info.find('ul.manga-info-text');
-        const thumbnail = manga_info_pic.find('img').attr('src');
-        util_1.log(thumbnail);
+        const thumbnail = util_1.BASE_URL + manga_info_pic.find('img').attr('src');
+        (0, util_1.log)(thumbnail);
         const title = manga_info_text.children('li').first().find('h1').text().trim();
-        util_1.log(title);
+        (0, util_1.log)(title);
         let authors = null;
         let categories = null;
         let status = null;
@@ -53,7 +53,7 @@ class Crawler {
             }
         });
         const shortened_content = content_left.find('div#noidungm').text().trim() /*.replace()*/;
-        util_1.log(shortened_content);
+        (0, util_1.log)(shortened_content);
         //const  = panel_story_info_description.substring(panel_story_info_description.indexOf(":") + 2);
         const chapters = $('div#chapter > div.manga-info-chapter > div.chapter-list > div.row')
             .toArray()

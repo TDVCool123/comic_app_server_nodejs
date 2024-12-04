@@ -7,8 +7,8 @@ class Controller {
     constructor() {
         this.getCategoryDetail = async (req, res) => {
             try {
-                const { link } = req.query;
-                util_1.log({ link });
+                const { link, type = 'latest', category = 'All', state = 'all', page = '1' } = req.query;
+                (0, util_1.log)({ link });
                 // check link is valid?
                 if (!link) {
                     return res
@@ -18,7 +18,7 @@ class Controller {
                         status_code: 422
                     });
                 }
-                if (typeof link !== 'string' || !util_1.isValidURL(link)) {
+                if (typeof link !== 'string' || !(0, util_1.isValidURL)(link)) {
                     return res
                         .status(422)
                         .json({
@@ -26,12 +26,14 @@ class Controller {
                         status_code: 422
                     });
                 }
-                const page = parseInt(req.query.page) || 1;
-                const comics = await category_detail_crawler_1.Crawler.getComics(link, page);
+                // Build the updated URL if parameters are provided
+                const categoryLink = `${link}/?type=${type}&category=${category}&state=${state}&page=${page}`;
+                (0, util_1.log)({ categoryLink });
+                const comics = await category_detail_crawler_1.Crawler.getComics(categoryLink, parseInt(page));
                 res.status(200).json(comics);
             }
             catch (e) {
-                util_1.log(e);
+                (0, util_1.log)(e);
                 const error = {
                     message: 'Internal server error',
                     status_code: 500
@@ -42,7 +44,7 @@ class Controller {
         this.getPopulars = async (req, res) => {
             try {
                 const { link } = req.query;
-                util_1.log({ link });
+                (0, util_1.log)({ link });
                 // check link is valid?
                 if (!link) {
                     return res
@@ -52,7 +54,7 @@ class Controller {
                         status_code: 422
                     });
                 }
-                if (typeof link !== 'string' || !util_1.isValidURL(link)) {
+                if (typeof link !== 'string' || !(0, util_1.isValidURL)(link)) {
                     return res
                         .status(422)
                         .json({
@@ -64,7 +66,7 @@ class Controller {
                 res.status(200).json(comics);
             }
             catch (e) {
-                util_1.log(e);
+                (0, util_1.log)(e);
                 const error = {
                     message: 'Internal server error',
                     status_code: 500

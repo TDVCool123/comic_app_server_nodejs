@@ -8,11 +8,11 @@ const util_1 = require("../util");
 const cheerio_1 = __importDefault(require("cheerio"));
 class Crawler {
     static async getComics(categoryLink, page) {
-        const body = await util_1.GET(`${categoryLink}/page/${page}`);
-        return util_1.bodyToComicList(body);
+        const body = await (0, util_1.GET)(categoryLink);
+        return (0, util_1.bodyToComicList)(body);
     }
     static async getPopularComics(categoryLink) {
-        const body = await util_1.GET(categoryLink);
+        const body = await (0, util_1.GET)(categoryLink);
         const $ = cheerio_1.default.load(body);
         return $('div.manga_slide_container > div.fit_thumbnail')
             .toArray()

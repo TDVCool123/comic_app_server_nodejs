@@ -3,7 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bodyToComicListNew = exports.bodyToComicList = exports.GET = exports.decode = exports.encode = exports.escapeHTML = exports.log = exports.isValidURL = exports.BASE_URL = void 0;
+exports.decode = exports.encode = exports.log = exports.BASE_URL = void 0;
+exports.isValidURL = isValidURL;
+exports.escapeHTML = escapeHTML;
+exports.GET = GET;
+exports.bodyToComicList = bodyToComicList;
+exports.bodyToComicListNew = bodyToComicListNew;
 const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 console.log(`NODEJS running: env = '${env}'`);
 if (env === 'development') {
@@ -12,7 +17,7 @@ if (env === 'development') {
 const debug_1 = __importDefault(require("debug"));
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
-const log = debug_1.default('comic-app-server:server');
+const log = (0, debug_1.default)('comic-app-server:server');
 exports.log = log;
 /**
  *
@@ -26,7 +31,6 @@ function isValidURL(str) {
         '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
     return pattern.test(str);
 }
-exports.isValidURL = isValidURL;
 function escapeHTML(s) {
     return s.replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
@@ -34,7 +38,6 @@ function escapeHTML(s) {
         .replace(/>/g, '&gt;')
         .replace(/\n/g, '');
 }
-exports.escapeHTML = escapeHTML;
 /**
  *
  */
@@ -69,7 +72,6 @@ function GET(url) {
         });
     });
 }
-exports.GET = GET;
 /**
  * Parse body to list of comics
  * @param body string
@@ -109,7 +111,6 @@ function bodyToComicList(body) {
         };
     });
 }
-exports.bodyToComicList = bodyToComicList;
 function bodyToComicListNew(body) {
     const $ = cheerio_1.default.load(body);
     return $('div.container > div.main-wrapper > div.leftCol.listCol > div.truyen-list > div.list-truyen-item-wrap')
@@ -143,6 +144,5 @@ function bodyToComicListNew(body) {
     })
         .filter((c) => c !== null);
 }
-exports.bodyToComicListNew = bodyToComicListNew;
 exports.BASE_URL = 'https://ww.mangakakalot.tv';
 //# sourceMappingURL=util.js.map

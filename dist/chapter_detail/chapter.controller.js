@@ -8,7 +8,7 @@ class Controller {
         this.getChapterDetail = async (req, res) => {
             try {
                 const { link } = req.query;
-                util_1.log({ link });
+                (0, util_1.log)({ link });
                 // check link is valid?
                 if (!link) {
                     return res
@@ -18,7 +18,7 @@ class Controller {
                         status_code: 422
                     });
                 }
-                if (typeof link !== 'string' || !util_1.isValidURL(link)) {
+                if (typeof link !== 'string' || !(0, util_1.isValidURL)(link)) {
                     return res
                         .status(422)
                         .json({
@@ -30,7 +30,7 @@ class Controller {
                 res.status(200).json(chapter);
             }
             catch (e) {
-                util_1.log(e);
+                (0, util_1.log)(e);
                 res.status(500)
                     .json({
                     message: 'Internal server error',
