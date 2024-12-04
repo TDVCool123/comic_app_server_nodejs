@@ -14,10 +14,10 @@ export class Crawler {
     const body = await GET(BASE_URL+"/");
     const categories = this.getCategories(body);
 
-    const images = await this.fetchImagesIfNeeded(categories.map(c => BASE_URL+c.link));
+    const images = await this.fetchImagesIfNeeded(categories.map(c => c.link));
 
     return categories.map((c): Category => {
-      const link = BASE_URL+c.link;
+      const link = c.link;
       return {
         ...c,
         thumbnail: images[link],
@@ -34,7 +34,7 @@ export class Crawler {
       .map(td => {
         const $td = $(td);
         return {
-          link: $td.find('a').attr('href'),
+          link: BASE_URL+$td.find('a').attr('href'),
           name: $td.find('a').text().trim(),
         };
       });
