@@ -38,11 +38,12 @@ jobs:
     needs: build
     runs-on: [self-hosted]
     steps:
+      - name: Delete old container
+        run: docker rm -f node_comic_app_container || true
+      
       - name: Pull image from docker hub
         run: docker pull ${{ vars.DOCKER_USER }}/node_comic_app:latest
 
-      - name: Delete old container
-        run: docker rm -f node_comic_app_container || true
 
       - name: Run docker container
         run: docker run -d -p 3000:3000 --name node_comic_app_container ${{ vars.DOCKER_USER }}/node_comic_app
