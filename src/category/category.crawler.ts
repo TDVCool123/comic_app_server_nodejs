@@ -29,6 +29,7 @@ export class Crawler {
   private getCategories(body: string) {
     const $ = cheerio.load(body);
     const categories = $('div.container > div.main-wrapper > div.middleCol > div.panel-category > table > tbody > tr> td')
+      .slice(2)  // Comienza desde el tercer tr (índice 2)
       .toArray()
       .map(td => {
         const $td = $(td);
