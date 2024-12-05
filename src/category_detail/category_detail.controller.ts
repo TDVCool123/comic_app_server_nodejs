@@ -7,7 +7,7 @@ import { log, isValidURL } from "../util";
 export class Controller {
   getCategoryDetail: RequestHandler = async (req, res) => {
     try {
-      const { link, type = 'latest', category = 'All', state = 'all' } = req.query;
+      const { link, type = 'latest', category = 'All', state = 'all'} = req.query;
       link
     log({ link });
 
